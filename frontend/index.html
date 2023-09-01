@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortner</title>
+    <style>
+        body {
+            background-color: bisque;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+        }
+
+
+        .input-holder {
+            width: 100%;
+            justify-content: center;
+            display: flex;
+            flex-direction: row;
+        }
+
+        input {
+            width: 75%;
+            font-size: 1.2rem;
+            outline: none;
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+            margin: 0;
+            border-radius: 5px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            padding: auto 2rem;
+        }
+
+        button {
+            margin: 0;
+            font-size: 1.1rem;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>URL Shortner</h1>
+    <div class="content">
+        <div class="input-holder">
+            <input type="text" placeholder="Enter URL" id="url" />
+            <button onclick="getShortURL()">Submit</button>
+        </div>
+
+        <p id="shortURL"></p>
+    </div>
+    <script>
+        function getShortURL() {
+            let inputURL = document.getElementById("url")
+            const requestData = {
+                "longURL": inputURL.value
+            };
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+                body: JSON.stringify(requestData)
+            };
+            if (inputURL.value !== "") {
+                fetch("http://localhost:8080/v1/shortURL", requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            alert("Error")
+                        }
+                        return response.json()
+                    })
+                    .then(data => {
+                        console.log(data)
+                        let shortURL = document.getElementById("shortURL")
+                        shortURL.innerText = `New Short URL : ${data.url}`
+
+                    })
+                    .catch(err => {
+                        console.error("Error:", err)
+                        shortURL.innerText = ""
+                    })
+            }
+        }
+    </script>
+</body>
+
+</html>
