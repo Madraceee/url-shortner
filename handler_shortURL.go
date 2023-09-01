@@ -27,6 +27,10 @@ func shortURL(longURL string) (uuid.UUID, string) {
 	return uuid, encoded
 }
 
+type payload struct {
+	URL string `json:"url"`
+}
+
 func (apiCfg *apiConfig) handleUrlShorten(w http.ResponseWriter, r *http.Request) {
 
 	godotenv.Load(".env")
@@ -57,7 +61,9 @@ func (apiCfg *apiConfig) handleUrlShorten(w http.ResponseWriter, r *http.Request
 			Shorturl: shortUrl,
 		})
 
-		respondWithJSON(w, 200, formattedShortURL)
+		respondWithJSON(w, 200, payload{
+			URL: formattedShortURL,
+		})
 		return
 	}
 
@@ -69,9 +75,6 @@ func (apiCfg *apiConfig) handleUrlShorten(w http.ResponseWriter, r *http.Request
 
 	//If record exsists
 	formattedShortURL := fmt.Sprintf("%v/%v", pageURL, record.Shorturl)
-	type payload struct {
-		URL string `json:"url"`
-	}
 	respondWithJSON(w, 200, payload{
 		URL: formattedShortURL,
 	})
